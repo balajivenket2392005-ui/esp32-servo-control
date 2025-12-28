@@ -1,0 +1,91 @@
+name: Build Desktop & Mobile Apps
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+    
+    - name: Install dependencies
+      run: npm install
+    
+    - name: Build Windows App
+      run: npm run build
+    
+    - name: Upload Windows Installer
+      uses: actions/upload-artifact@v3
+      with:
+        name: Windows-Installer
+        path: dist/*.exe
+    
+    - name: Create Release
+      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: v1.0.${{ github.run_number }}
+        name: Release v1.0.${{ github.run_number }}
+        files: dist/*.exe
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-android:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+    
+    - name: Setup Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+    
+    - name: Install Cordova
+      run: npm install -g cordova
+    
+    - name: Setup Cordova Project
+      run: |
+        cordova create android-build com.esp32.servocontrol "ESP32 Servo Control"
+        cd android-build
+        cp ../index.html www/
+        cp ../config.xml .
+        cordova platform add android
+    
+    - name: Build Android APK
+      run: |
+        cd android-build
+        cordova build android --release
+    
+    - name: Upload Android APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: Android-APK
+        path: android-build/platforms/android/app/build/outputs/apk/release/*.apk
+    
+    - name: Create Release with APK
+      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: v1.0.${{ github.run_number }}
+        name: Release v1.0.${{ github.run_number }}
+        files: android-build/platforms/android/app/build/outputs/apk/release/*.apk
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
