@@ -1,42 +1,17 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.esp32.servocontrol" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <n>ESP32 Servo Control</n>
-    <description>
-        Control your ESP32 servo motor from anywhere using Firebase
-    </description>
-    <author email="your@email.com" href="https://yourwebsite.com">
-        Your Name
-    </author>
+    <name>ESP32 Servo Control</name>
+    <description>Control your ESP32 servo motor from anywhere using Firebase</description>
+    <author email="your@email.com" href="https://yourwebsite.com">Your Name</author>
     <content src="index.html" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
-    <allow-intent href="tel:*" />
-    <allow-intent href="sms:*" />
-    <allow-intent href="mailto:*" />
-    <allow-intent href="geo:*" />
-    
-    <platform name="android">
-        <allow-intent href="market:*" />
-        <preference name="AndroidWindowSplashScreenAnimatedIcon" value="res/screen/android/splash.png" />
-        <preference name="AndroidWindowSplashScreenBackground" value="#667eea" />
-        <icon density="ldpi" src="res/icon/android/ldpi.png" />
-        <icon density="mdpi" src="res/icon/android/mdpi.png" />
-        <icon density="hdpi" src="res/icon/android/hdpi.png" />
-        <icon density="xhdpi" src="res/icon/android/xhdpi.png" />
-        <icon density="xxhdpi" src="res/icon/android/xxhdpi.png" />
-        <icon density="xxxhdpi" src="res/icon/android/xxxhdpi.png" />
-    </platform>
     
     <preference name="DisallowOverscroll" value="true" />
     <preference name="Orientation" value="portrait" />
-    <preference name="StatusBarOverlaysWebView" value="false" />
-    <preference name="StatusBarBackgroundColor" value="#667eea" />
-    <preference name="StatusBarStyle" value="lightcontent" />
-    <preference name="Fullscreen" value="false" />
-    <preference name="KeepRunning" value="true" />
     
-    <plugin name="cordova-plugin-whitelist" spec="^1.3.5" />
-    <plugin name="cordova-plugin-statusbar" spec="^2.4.3" />
-    <plugin name="cordova-plugin-network-information" spec="^2.0.2" />
+    <platform name="android">
+        <allow-intent href="market:*" />
+    </platform>
 </widget>
