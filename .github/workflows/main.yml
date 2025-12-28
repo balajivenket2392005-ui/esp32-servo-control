@@ -11,81 +11,61 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     
     - name: Setup Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
-        node-version: '18'
+        node-version: '20'
     
     - name: Install dependencies
-      run: npm install
+      run: npm install --legacy-peer-deps
     
     - name: Build Windows App
       run: npm run build
     
     - name: Upload Windows Installer
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Windows-Installer
         path: dist/*.exe
-    
-    - name: Create Release
-      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
-      uses: softprops/action-gh-release@v1
-      with:
-        tag_name: v1.0.${{ github.run_number }}
-        name: Release v1.0.${{ github.run_number }}
-        files: dist/*.exe
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   build-android:
     runs-on: ubuntu-latest
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     
     - name: Setup Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
-        node-version: '18'
+        node-version: '20'
     
     - name: Setup Java
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
         java-version: '17'
     
     - name: Install Cordova
-      run: npm install -g cordova
+      run: npm install -g cordova@latest
     
     - name: Setup Cordova Project
       run: |
-        cordova create android-build com.esp32.servocontrol "ESP32 Servo Control"
+        cordova create android-build com.esp32.servocontrol "ESP32ServoControl"
         cd android-build
-        cp ../index.html www/
+        cp ../index.html www/index.html
         cp ../config.xml .
-        cordova platform add android
+        cordova platform add android@latest
     
     - name: Build Android APK
       run: |
         cd android-build
-        cordova build android --release
+        cordova build android
     
     - name: Upload Android APK
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Android-APK
-        path: android-build/platforms/android/app/build/outputs/apk/release/*.apk
-    
-    - name: Create Release with APK
-      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
-      uses: softprops/action-gh-release@v1
-      with:
-        tag_name: v1.0.${{ github.run_number }}
-        name: Release v1.0.${{ github.run_number }}
-        files: android-build/platforms/android/app/build/outputs/apk/release/*.apk
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        path: android-build/platforms/android/app/build/outputs/apk/debug/app-debug.apk
